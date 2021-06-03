@@ -268,7 +268,7 @@ Below follows descriptions of the kernels used in the RTD approach along with co
 Using the diagrammatic rules detailed in Refs.~\cite{leijnse2008kinetic, saptsov2012fermionic, gergs2017transport} we can write down all diagrams containing terms of order $L_T^2$, which is only a single one $\left( L_T\frac{1}{z-L_D-L_R}L_T\rho_R\right )$. Going from the diagrammatic expression to something useful requires commuting all reservoir operators $\mathcal{J}$ to the left using $L_R\J_1^q=\J_1^{q}(L_R+\eta_1\omega_1)$, contracting two $\mathcal{J}$s and tracing/integrating over the reservoir degrees of freedom: $\langle \mathcal{J}_1\mathcal{J}_2\rangle_R$. Using the operators defined in Eq. \ref{Eq:G2} the diagram gives (remember that the sum over 1 implicitly means summing over $\eta_1, q_1, l_1, r_1$) \cite{gergs2015charge, gergs2017transport, gergs2018spin}
 
 \begin{equation}
-    -i\int d\omega_1\sum_1 \delta_{\eta_1\bar{\eta_2}}\frac{\Gamma_{1\bar{2}}}{2\pi}\mathcal{G}_{\bar{2}}^+ \frac{q_1\gamma_1^{q_1}}{i0^+-L_D-\eta_1\omega_1}\mathcal{G}_{1}^{\bar{q_1}},
+    -i\int d\omega_1\sum_1\frac{\Gamma_{1\bar{2}}}{2\pi}\mathcal{G}_{\bar{2}}^+ \frac{q_1\gamma_1^{q_1}}{i0^+-L_D-\eta_1\omega_1}\mathcal{G}_{1}^{\bar{q_1}},
         \label{Eq:Wdd1}
 \end{equation}
 \\
@@ -434,7 +434,7 @@ Here one can immediately notice the similarities between this expression and Eq.
 The similarities with $W_{dd}^{(1)}$ are used in QmeQ when building $W_{E,1}$ and $W_{E,2}$. The only differences between $W_{E,1/2}$ and $W_{dd}^{(1)}$ are that the matrix elements are based on the real part of the integral and that a pre-factor stemming from $t_{\omega_1, r_1, l_1}t_{\omega_2, r_2, l_1}$ is included in each matrix element.
 \\
 \\ 
-The function \verb!ApproachRTD.generate_row_1st_energy_kernel()! calculates a row in $W_{E,1}$.
+The function \verb!ApproachRTD.generate_row_1st_energy_kernel()! calculates a row in $W_{E,1}$. The implementation assumes that the product of $t$s is purely real (the individual $t$s can still be imaginary), and will print an error message if it's not.
  %--------------------------------------
  \subsection{$W_{E,2}$}
 
@@ -444,7 +444,7 @@ Using the same approach as for $W_{E,1}$ we can derive the second contribution a
      \frac{1}{2}\Tru{D} \int d\omega_2\sum_{\underset{r_2\ne r_1}{12,l,r_2}}\pi\delta_{\bar{\eta_1}\eta_2}t_{\omega_1, r_1, l}t_{\omega_2, r_2, l}t_{\bar{2}}t_{\bar{1}}\G^-_{\bar{1}}\frac{\tanh\left ( \frac{\eta_2(\omega_2-\mu_2)}{2T_2} \right )}{z-\eta_2\omega_2-L_D}\G^{+}_{\bar{2}}\rho_D = \frac{1}{2}\Tru{D} W_{E,2}^r\rho_D.
 \end{equation}
 \\
-The function \verb!ApproachRTD.generate_row_2nd_energy_kernel()! calculates a row in $W_{E,2}$.
+The function \verb!ApproachRTD.generate_row_2nd_energy_kernel()! calculates a row in $W_{E,2}$. The products of $t$s are assumed to be real, just as for the first kernel.
 %--------------------------------------
 \subsection{Energy and heat current}
 
@@ -520,7 +520,7 @@ We divide the solutions of these integrals into two cases: $T_1=T_2$ and $T_1\ne
 %----------------------------------------------------
 \subsubsection{Direct integral :$T_1=T_2$}
 
-For the special case of equal temperatures the integral can be solved analytically. This is done in Ref.~\cite{leijnse2008kinetic}, which yields for the imaginary part of the integral
+For the special case of equal temperatures the imaginary part of the integral can be solved for analytically. This is done in Ref.~\cite{leijnse2008kinetic}, which yields
 
 \begin{equation}
 \begin{split}
@@ -654,7 +654,7 @@ I_X^- =-i8T_1\pi\sum_{\alpha>0} \frac{\psi\left ( \frac{1}{2} + \frac{b_\alpha T
 After accounting for the Keldysh indices we end up with $I_X = p_2p_1\frac{1}{4}I_X^-$.
 \\
 \\
-Neither of the implementations for the direct and exchange integral ($T_1\ne T_2$) in QmeQ make the assumption that the integral needs to be purely imaginary. That requirement is enforced after the integral is evaluated. Thus, those implementations can also be used for future extensions to QmeQ where the RTD language is used for off-diagonal density matrices.
+Neither of the implementations for the direct and exchange integral ($T_1\ne T_2$) in QmeQ make the assumption that the integral needs to be purely imaginary in order for the matrix elements to be real. That requirement is enforced after the integral is evaluated. In fact, if the product of tunnel amplitudes in Eq.~\ref{Eq:W2Leijnse} has a finite complex part the integrals will be evaluated using the Ozaki approach. This also means that these general solutions can be used for future extensions to QmeQ where the RTD language is used for off-diagonal density matrices.
 %-----------------------------------------------
 \section{Parallelization and memory}
 
